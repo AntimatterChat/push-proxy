@@ -10,8 +10,16 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/mattermost/mattermost-push-proxy/internal/version"
-	"github.com/mattermost/mattermost-push-proxy/server"
+	"github.com/AntimatterChat/push-proxy/internal/version"
+	"github.com/AntimatterChat/push-proxy/server"
+)
+
+const (
+	defaultConfigFile = "antimatter-push-proxy.json"
+	// legacyConfigFile is the name the config file had before the rename to
+	// Antimatter. It is still read when no file with the new name exists, so
+	// existing installations keep working.
+	legacyConfigFile = "mattermost-push-proxy.json"
 )
 
 var (
@@ -20,8 +28,8 @@ var (
 )
 
 func main() {
-	flag.StringVar(&flagConfigFile, "config", "mattermost-push-proxy.json", "")
-	flag.BoolVar(&falgVersion, "version", false, "")
+	flag.StringVar(&flagConfigFile, "config", defaultConfigFile, "path to the configuration file")
+	flag.BoolVar(&falgVersion, "version", false, "print the version and exit")
 	flag.Parse()
 
 	if falgVersion {
@@ -32,7 +40,19 @@ func main() {
 		os.Exit(0)
 	}
 
+	configFlagSet := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "config" {
+			configFlagSet = true
+		}
+	})
+
 	fileName := server.FindConfigFile(flagConfigFile)
+	if !configFlagSet && !fileExists(fileName) {
+		if legacy := server.FindConfigFile(legacyConfigFile); fileExists(legacy) {
+			fileName = legacy
+		}
+	}
 	cfg, err := server.LoadConfig(fileName)
 	if err != nil {
 		// We just do a hard exit, because the app won't be able to start without a config.
@@ -61,4 +81,9 @@ func main() {
 	<-stopChan
 
 	srv.Stop()
+}
+
+func fileExists(name string) bool {
+	_, err := os.Stat(name)
+	return err == nil
 }

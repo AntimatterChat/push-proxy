@@ -38,7 +38,7 @@ func TestSendNotificationTransportRouting(t *testing.T) {
 
 			srv := &AppleNotificationServer{
 				ApplePushSettings: ApplePushSettings{
-					ApplePushTopic: "com.mattermost.rnbeta",
+					ApplePushTopic: "chat.antimatter.app",
 				},
 				metrics: m,
 			}
@@ -70,7 +70,7 @@ func TestSendNotificationTransportRouting(t *testing.T) {
 func TestBuildVoIPNotification(t *testing.T) {
 	srv := &AppleNotificationServer{
 		ApplePushSettings: ApplePushSettings{
-			ApplePushTopic: "com.mattermost.rnbeta",
+			ApplePushTopic: "chat.antimatter.app",
 		},
 	}
 
@@ -83,7 +83,7 @@ func TestBuildVoIPNotification(t *testing.T) {
 		n := srv.buildVoIPNotification(msg)
 
 		assert.Equal(t, "abcd1234", n.DeviceToken)
-		assert.Equal(t, "com.mattermost.rnbeta.voip", n.Topic, "VoIP pushes must use the .voip subtopic")
+		assert.Equal(t, "chat.antimatter.app.voip", n.Topic, "VoIP pushes must use the .voip subtopic")
 		assert.Equal(t, apns.PriorityHigh, n.Priority)
 		assert.Equal(t, apns.PushTypeVOIP, n.PushType)
 	})

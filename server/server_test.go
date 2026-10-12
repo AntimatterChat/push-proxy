@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mattermost/mattermost-push-proxy/internal/version"
+	"github.com/AntimatterChat/push-proxy/internal/version"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
@@ -20,7 +20,7 @@ import (
 )
 
 func TestBasicServer(t *testing.T) {
-	fileName := FindConfigFile("mattermost-push-proxy.sample.json")
+	fileName := FindConfigFile("antimatter-push-proxy.sample.json")
 	cfg, err := LoadConfig(fileName)
 	require.NoError(t, err)
 
@@ -85,7 +85,7 @@ func TestBasicServer(t *testing.T) {
 }
 
 func TestAndroidSend(t *testing.T) {
-	fileName := FindConfigFile("mattermost-push-proxy.sample.json")
+	fileName := FindConfigFile("antimatter-push-proxy.sample.json")
 	cfg, err := LoadConfig(fileName)
 	require.NoError(t, err)
 
@@ -205,7 +205,7 @@ func TestServerCheckCredentialExpiry(t *testing.T) {
 }
 
 func TestServer_version(t *testing.T) {
-	fileName := FindConfigFile("mattermost-push-proxy.sample.json")
+	fileName := FindConfigFile("antimatter-push-proxy.sample.json")
 	cfg, err := LoadConfig(fileName)
 	require.NoError(t, err)
 	logger, err := mlog.NewLogger()

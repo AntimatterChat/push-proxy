@@ -39,7 +39,7 @@ func TestMetricDisabled(t *testing.T) {
 	platform := "junk"
 	pushType := model.PushTypeMessage
 
-	fileName := FindConfigFile("mattermost-push-proxy.sample.json")
+	fileName := FindConfigFile("antimatter-push-proxy.sample.json")
 	cfg, err := LoadConfig(fileName)
 	require.NoError(t, err)
 	cfg.AndroidPushSettings[0].AndroidAPIKey = platform
@@ -90,7 +90,7 @@ func TestMetricEnabled(t *testing.T) {
 	platform := "junk"
 	pushType := model.PushTypeMessage
 
-	fileName := FindConfigFile("mattermost-push-proxy.sample.json")
+	fileName := FindConfigFile("antimatter-push-proxy.sample.json")
 	cfg, err := LoadConfig(fileName)
 	require.NoError(t, err)
 	cfg.AndroidPushSettings[0].AndroidAPIKey = platform

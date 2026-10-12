@@ -19,7 +19,7 @@ import (
 )
 
 func TestAndroidInitialize(t *testing.T) {
-	fileName := FindConfigFile("mattermost-push-proxy.sample.json")
+	fileName := FindConfigFile("antimatter-push-proxy.sample.json")
 	cfg, err := LoadConfig(fileName)
 	require.NoError(t, err)
 

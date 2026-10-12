@@ -8,31 +8,17 @@
     "RetryTimeoutSec": 8,
     "ApplePushSettings":[
         {
-            "Type":"apple",
-            "ApplePushUseDevelopment":false,
-            "ApplePushCertPrivate":"",
-            "ApplePushCertPassword":"",
-            "ApplePushTopic":"com.mattermost.Mattermost",
-            "AppleAuthKeyFile": "",
-            "AppleAuthKeyID": "",
-            "AppleTeamID": ""
-        },
-        {
             "Type":"apple_rn",
             "ApplePushUseDevelopment":false,
             "ApplePushCertPrivate":"",
             "ApplePushCertPassword":"",
-            "ApplePushTopic":"com.mattermost.react.native",
+            "ApplePushTopic":"chat.antimatter.app",
             "AppleAuthKeyFile": "",
             "AppleAuthKeyID": "",
             "AppleTeamID": ""
         }
     ],
     "AndroidPushSettings": [
-        {
-            "Type":"android",
-            "ServiceFileLocation":""
-        },
         {
             "Type":"android_rn",
             "ServiceFileLocation":""

@@ -1,4 +1,4 @@
-module github.com/mattermost/mattermost-push-proxy
+module github.com/AntimatterChat/push-proxy
 
 go 1.26.3
 

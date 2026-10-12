@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: Mattermost Push Proxy
-  description: 'This is the OpenAPI documentation for Mattermost Push Proxy REST API'
+  title: Antimatter Push Proxy
+  description: 'This is the OpenAPI documentation for the Antimatter Push Proxy REST API'
   version: 1.0.0
 servers:
 - url: http://url-to-push-proxy.com/api/v1

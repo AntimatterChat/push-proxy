@@ -20,7 +20,7 @@ import (
 	throttled "gopkg.in/throttled/throttled.v1"
 	throttledStore "gopkg.in/throttled/throttled.v1/store"
 
-	"github.com/mattermost/mattermost-push-proxy/internal/version"
+	"github.com/AntimatterChat/push-proxy/internal/version"
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 )
@@ -63,7 +63,7 @@ func New(cfg *ConfigPushProxy, logger *mlog.Logger) *Server {
 // Start starts the server.
 func (s *Server) Start() {
 	v := version.VersionInfo()
-	s.logger.Info("Push proxy server is initializing...", mlog.String("version", v.String()))
+	s.logger.Info("Antimatter push proxy is initializing...", mlog.String("version", v.String()))
 
 	proxyServer := getProxyServer()
 	if proxyServer != "" {
@@ -234,7 +234,7 @@ func (s *Server) Stop() {
 }
 
 func root(w http.ResponseWriter, r *http.Request) {
-	_, _ = w.Write([]byte("<html><body>Mattermost Push Proxy</body></html>"))
+	_, _ = w.Write([]byte("<html><body>Antimatter Push Proxy</body></html>"))
 }
 
 func (s *Server) version(w http.ResponseWriter, _ *http.Request) {

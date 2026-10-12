@@ -1,3 +1,7 @@
+Antimatter Push Proxy
+Based on the Mattermost Push Proxy (https://github.com/mattermost/mattermost-push-proxy).
+Antimatter changes © 2026-present Antimatter contributors.
+
 Mattermost Platform 
 © 2015 Mattermost, Inc.  All Rights Reserved.  See LICENSE.txt for license information.
 

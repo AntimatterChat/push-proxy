@@ -29,6 +29,7 @@ _testmain.go
 
 # Log files
 *mattermost.log
+*antimatter.log
 
 # Vim temporary files
 *.swp
@@ -53,12 +54,14 @@ certs.bak
 
 # Ignore binary
 /mattermost-push-proxy
+/antimatter-push-proxy
 
 node_modules
 # Swagger output file
 index.html
 
 config/mattermost-push-proxy.json
+config/antimatter-push-proxy.json
 # Ignore config.json
 cmd/renew_apple_cert/convert_cert/config/**
 cmd/renew_apple_cert/convert_cert/config.json

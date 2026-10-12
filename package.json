@@ -1,7 +1,7 @@
 {
-  "name": "mattermost-push-proxy",
+  "name": "antimatter-push-proxy",
   "version": "1.0.0",
-  "description": "Repository for mattermost push proxy",
+  "description": "API documentation of the Antimatter push proxy",
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mattermost/mattermost-push-proxy.git"
+    "url": "git+https://github.com/AntimatterChat/push-proxy.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mattermost/mattermost-push-proxy/issues"
+    "url": "https://github.com/AntimatterChat/push-proxy/issues"
   },
-  "homepage": "https://github.com/mattermost/mattermost-push-proxy#readme",
+  "homepage": "https://github.com/AntimatterChat/push-proxy#readme",
   "dependencies": {
     "redoc-cli": "^0.9.9",
     "swagger-cli": "^4.0.4"
