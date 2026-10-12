@@ -1,37 +1,61 @@
-FROM --platform=${TARGETPLATFORM} ubuntu:noble-20250529 AS builder
+# Antimatter push proxy, built from source.
+#
+#   docker build -f docker/Dockerfile -t antimatter-push-proxy .
+#
+# The configuration is read from /antimatter-push-proxy/config/antimatter-push-proxy.json
+# (mount your own over it) and the Apple/Firebase credentials it points to are usually
+# mounted under /antimatter-push-proxy/certs. See README.md.
+
+ARG GO_VERSION=1.26
+
+FROM --platform=${BUILDPLATFORM} golang:${GO_VERSION}-alpine AS builder
+ARG TARGETOS
 ARG TARGETARCH
+# Version information, passed by `make docker-build`; left at their defaults otherwise.
+ARG GIT_VERSION=devel
+ARG BUILD_HASH=unknown
+ARG BUILD_TAG_LATEST=unknown
+ARG BUILD_TAG_CURRENT=unknown
+ARG GIT_TREESTATE=unknown
+ARG BUILD_DATE=unknown
 
-# Setting bash as our shell, and enabling pipefail option
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY main.go ./
+COPY internal ./internal
+COPY server ./server
+RUN PKG=github.com/AntimatterChat/push-proxy/internal/version \
+  && CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath \
+    -ldflags "-s -w \
+      -X '${PKG}.gitVersion=${GIT_VERSION}' \
+      -X '${PKG}.buildHash=${BUILD_HASH}' \
+      -X '${PKG}.buildTagLatest=${BUILD_TAG_LATEST}' \
+      -X '${PKG}.buildTagCurrent=${BUILD_TAG_CURRENT}' \
+      -X '${PKG}.gitTreeState=${GIT_TREESTATE}' \
+      -X '${PKG}.buildDate=${BUILD_DATE}'" \
+    -o /out/antimatter-push-proxy .
 
-# Copying tarball
-WORKDIR /mattermost-push-proxy
-COPY dist/mattermost-push-proxy-linux-${TARGETARCH}.tar.gz /mattermost-push-proxy-linux.tar.gz
-RUN tar -xf /mattermost-push-proxy-linux.tar.gz --strip-components=1  -C /mattermost-push-proxy
+FROM alpine:3
 
-FROM --platform=${TARGETPLATFORM} ubuntu:noble-20250529
+# hadolint ignore=DL3018
+RUN apk add --no-cache ca-certificates tzdata
 
-# Install needed packages and indirect dependencies
-# hadolint ignore=DL3008
-RUN apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-  ca-certificates \
-  libffi-dev \
-  netcat-openbsd \
-  tzdata \
-  && rm -rf /var/lib/apt/lists/*
+WORKDIR /antimatter-push-proxy
+COPY --from=builder /out/antimatter-push-proxy bin/antimatter-push-proxy
+COPY config/antimatter-push-proxy.sample.json config/antimatter-push-proxy.sample.json
+COPY config/antimatter-push-proxy.sample.json config/antimatter-push-proxy.json
+COPY docker/entrypoint /usr/local/bin/entrypoint
 
-# Coyping needed files from previous stage
-COPY --from=builder /mattermost-push-proxy/ /mattermost-push-proxy/
-COPY docker/entrypoint /usr/local/bin/
-
-RUN chown -R nobody:nogroup /mattermost-push-proxy
+RUN mkdir -p certs logs && chown -R nobody:nobody /antimatter-push-proxy
 
 USER nobody
-WORKDIR /mattermost-push-proxy
-ENV PUSH_PROXY=/mattermost-push-proxy/bin/mattermost-push-proxy
+ENV PUSH_PROXY=/antimatter-push-proxy/bin/antimatter-push-proxy
 
 EXPOSE 8066
-VOLUME ["/mattermost-push-proxy/config", "/mattermost-push-proxy/certs"]
+VOLUME ["/antimatter-push-proxy/config", "/antimatter-push-proxy/certs"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
+  CMD wget -q -O /dev/null http://127.0.0.1:8066/version || exit 1
 
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
