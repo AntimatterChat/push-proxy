@@ -1,4 +1,15 @@
-# Mattermost Push Proxy Changelog
+# Antimatter Push Proxy Changelog
+
+## Antimatter
+- Renamed to the Antimatter Push Proxy: the binary, the Docker image and the configuration file are
+  now `antimatter-push-proxy` (`antimatter-push-proxy.json`; `mattermost-push-proxy.json` is still
+  read when the new file is missing).
+- The sample configuration targets the Antimatter mobile app (`chat.antimatter.app`).
+- The Docker image is built from source (`docker/Dockerfile`); the FIPS image, which needed
+  Mattermost's private base images, and Mattermost's release and publishing tooling are removed.
+- The README explains how to run your own push proxy.
+
+The releases below are those of the Mattermost Push Proxy this project is based on.
 
 
 ## 5.8.1 Release
