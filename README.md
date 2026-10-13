@@ -215,6 +215,16 @@ make docker-build   # the Docker image, built from source
 make lint           # golangci-lint and hadolint (in Docker)
 ```
 
+## Feedback and support
+
+Found a bug in the push proxy, or missing a feature? Please [open an
+issue](https://github.com/AntimatterChat/community/issues/new/choose) in the [Antimatter community
+repository](https://github.com/AntimatterChat/community), where the feedback for every part of
+Antimatter is gathered. Questions and ideas are welcome in its
+[Discussions](https://github.com/AntimatterChat/community/discussions). Please report security
+problems privately, as explained in the [security
+policy](https://github.com/AntimatterChat/.github/blob/main/SECURITY.md).
+
 ## License
 
 Apache License 2.0, see [LICENSE.txt](LICENSE.txt) and [NOTICE.txt](NOTICE.txt). Based on the
