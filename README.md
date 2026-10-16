@@ -21,6 +21,9 @@ Antimatter server.
 - [HTTP API](#http-api)
 - [Building](#building)
 
+Documentation: the admin guide covers [push notifications](https://antimatter.chat/docs/admins/email-push.html#push)
+on [antimatter.chat/docs](https://antimatter.chat/docs/).
+
 ## Self-hosting
 
 Apple and Google only deliver a notification to an app when it is sent with that app's own
