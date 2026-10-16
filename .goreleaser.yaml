@@ -1,0 +1,114 @@
+# GoReleaser configuration of the push proxy release (see .github/workflows/release.yml): static
+# Linux binaries for amd64 and arm64, .tar.gz archives laid out like `make package`, .deb and .rpm
+# packages and a SHA256SUMS file. The workflow publishes the GitHub release itself, so GoReleaser
+# only builds.
+#
+#   goreleaser release --snapshot --clean   # local test build into dist/
+version: 2
+
+project_name: antimatter-push-proxy
+
+env:
+  - VERSION_PKG=github.com/AntimatterChat/push-proxy/internal/version
+
+builds:
+  - id: antimatter-push-proxy
+    main: .
+    # In bin/ inside the archives, like `make package`; the packages install it in /usr/bin.
+    binary: bin/antimatter-push-proxy
+    env:
+      - CGO_ENABLED=0
+    goos: [linux]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    # The same version information as the Makefile (internal/version, shown by -version).
+    ldflags:
+      - -s -w
+      - -X {{ .Env.VERSION_PKG }}.gitVersion={{ .Summary }}
+      - -X {{ .Env.VERSION_PKG }}.buildHash={{ .ShortCommit }}
+      - -X {{ .Env.VERSION_PKG }}.buildTagLatest={{ .Tag }}
+      - -X {{ .Env.VERSION_PKG }}.buildTagCurrent={{ if not .IsSnapshot }}{{ .Tag }}{{ end }}
+      - -X {{ .Env.VERSION_PKG }}.gitTreeState={{ .GitTreeState }}
+      - -X {{ .Env.VERSION_PKG }}.buildDate={{ .Date }}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+archives:
+  - id: archive
+    formats: [tar.gz]
+    name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    wrap_in_directory: "{{ .ProjectName }}"
+    builds_info:
+      owner: root
+      group: root
+      mode: 0755
+      mtime: "{{ .CommitDate }}"
+    files:
+      - src: config/antimatter-push-proxy.sample.json
+        dst: config/antimatter-push-proxy.sample.json
+        info: &root
+          owner: root
+          group: root
+          mtime: "{{ .CommitDate }}"
+      - src: packaging/antimatter-push-proxy.service
+        dst: antimatter-push-proxy.service
+        info: *root
+      - src: README.md
+        info: *root
+      - src: LICENSE.txt
+        info: *root
+      - src: NOTICE.txt
+        info: *root
+
+checksum:
+  name_template: SHA256SUMS
+  algorithm: sha256
+
+nfpms:
+  - id: packages
+    package_name: antimatter-push-proxy
+    file_name_template: "{{ .ConventionalFileName }}"
+    formats: [deb, rpm]
+    vendor: Antimatter
+    homepage: https://github.com/AntimatterChat/push-proxy
+    maintainer: Antimatter contributors <https://github.com/AntimatterChat>
+    description: |-
+      Antimatter push proxy.
+      Relays the push notifications of Antimatter servers to the Antimatter mobile apps through
+      Apple's APNs and Google's Firebase Cloud Messaging.
+    license: Apache-2.0
+    section: net
+    priority: optional
+    # The binary is bin/antimatter-push-proxy (see builds), so this installs /usr/bin/antimatter-push-proxy.
+    bindir: /usr
+    dependencies:
+      - ca-certificates
+    contents:
+      - src: packaging/antimatter-push-proxy.service
+        dst: /usr/lib/systemd/system/antimatter-push-proxy.service
+        file_info:
+          mode: 0644
+      - src: config/antimatter-push-proxy.sample.json
+        dst: /etc/antimatter-push-proxy/antimatter-push-proxy.json
+        type: config|noreplace
+        file_info:
+          mode: 0640
+      - src: config/antimatter-push-proxy.sample.json
+        dst: /usr/share/doc/antimatter-push-proxy/antimatter-push-proxy.sample.json
+      - src: README.md
+        dst: /usr/share/doc/antimatter-push-proxy/README.md
+      - src: LICENSE.txt
+        dst: /usr/share/doc/antimatter-push-proxy/LICENSE.txt
+      - src: NOTICE.txt
+        dst: /usr/share/doc/antimatter-push-proxy/NOTICE.txt
+    scripts:
+      postinstall: packaging/scripts/postinstall.sh
+      preremove: packaging/scripts/preremove.sh
+      postremove: packaging/scripts/postremove.sh
+    rpm:
+      group: Applications/Internet
+
+release:
+  disable: true
+
+changelog:
+  disable: true

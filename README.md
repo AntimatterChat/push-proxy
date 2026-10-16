@@ -136,7 +136,26 @@ services:
       - ./push-proxy/certs:/antimatter-push-proxy/certs:ro
 ```
 
-Without Docker: `make package` builds `dist/antimatter-push-proxy-<os>-<arch>.tar.gz`; unpack it,
+With the `.deb` or `.rpm` package: each release (`vX.Y.Z` tag) on the
+[releases page](https://github.com/AntimatterChat/push-proxy/releases) has packages and static
+binaries for Linux `amd64` and `arm64`, and a `SHA256SUMS` file
+(`sha256sum -c SHA256SUMS --ignore-missing` checks a download).
+
+```sh
+sudo apt install ./antimatter-push-proxy_X.Y.Z_amd64.deb      # Debian, Ubuntu
+sudo dnf install ./antimatter-push-proxy-X.Y.Z-1.x86_64.rpm   # Fedora, RHEL, Rocky, Alma
+```
+
+The package installs `/usr/bin/antimatter-push-proxy` and the `antimatter-push-proxy.service`
+systemd unit, which runs as the `antimatter-push-proxy` system user and logs to the journal
+(`journalctl -u antimatter-push-proxy`); the service is enabled but not started at install. The
+settings are in `/etc/antimatter-push-proxy/antimatter-push-proxy.json` (kept on upgrades) and the
+credentials go in `/etc/antimatter-push-proxy/certs`, readable by the service's group
+(`sudo chgrp antimatter-push-proxy <file>; sudo chmod 0640 <file>`): the service runs in
+`/etc/antimatter-push-proxy`, so `"./certs/AuthKey_ABCDE12345.p8"` works as above. Then
+`sudo systemctl start antimatter-push-proxy`.
+
+Without Docker or a package: `make package` builds `dist/antimatter-push-proxy-<os>-<arch>.tar.gz`; unpack it,
 put the config in `config/antimatter-push-proxy.json` and start `bin/antimatter-push-proxy` from the
 unpacked directory (or pass `-config /path/to/antimatter-push-proxy.json`). A proxy that was set up
 before the rename keeps working: when `antimatter-push-proxy.json` is missing, the proxy reads

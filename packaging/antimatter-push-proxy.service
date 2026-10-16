@@ -1,0 +1,48 @@
+# Antimatter push proxy, installed by the antimatter-push-proxy .deb/.rpm package.
+# Settings: /etc/antimatter-push-proxy/antimatter-push-proxy.json; the APNs key and the Firebase
+# service account go in /etc/antimatter-push-proxy/certs (paths like "./certs/AuthKey_X.p8" in the
+# settings are relative to /etc/antimatter-push-proxy).
+# Override this unit with `systemctl edit antimatter-push-proxy` rather than editing it: upgrades
+# replace it.
+[Unit]
+Description=Antimatter push proxy
+Documentation=https://github.com/AntimatterChat/push-proxy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=antimatter-push-proxy
+Group=antimatter-push-proxy
+ExecStart=/usr/bin/antimatter-push-proxy -config /etc/antimatter-push-proxy/antimatter-push-proxy.json
+WorkingDirectory=/etc/antimatter-push-proxy
+StateDirectory=antimatter-push-proxy
+StateDirectoryMode=0750
+LogsDirectory=antimatter-push-proxy
+Restart=on-failure
+RestartSec=5
+
+# Hardening: the proxy only reads its settings and credentials.
+UMask=0027
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target
