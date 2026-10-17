@@ -38,8 +38,9 @@ if [ -n "$first" ]; then
     cat <<MSG
 
 The Antimatter push proxy is installed and enabled, but not started. Next steps:
-  1. Put the APNs key (.p8) and the Firebase service account (.json) in $etc/certs
-     (sudo chgrp $user $etc/certs/*; sudo chmod 0640 $etc/certs/*).
+  1. Copy the APNs key (.p8) and the Firebase service account (.json) into $etc/certs,
+     readable by the service's group:
+     sudo install -o root -g $user -m 0640 AuthKey_X.p8 firebase-service-account.json $etc/certs/
   2. Fill in $etc/antimatter-push-proxy.json, e.g. "AppleAuthKeyFile": "./certs/AuthKey_X.p8".
   3. Start it: sudo systemctl start antimatter-push-proxy   (logs: journalctl -u antimatter-push-proxy)
   4. Point Antimatter at it: System Console > Environment > Push Notification Server,

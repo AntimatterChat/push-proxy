@@ -151,7 +151,8 @@ systemd unit, which runs as the `antimatter-push-proxy` system user and logs to 
 (`journalctl -u antimatter-push-proxy`); the service is enabled but not started at install. The
 settings are in `/etc/antimatter-push-proxy/antimatter-push-proxy.json` (kept on upgrades) and the
 credentials go in `/etc/antimatter-push-proxy/certs`, readable by the service's group
-(`sudo chgrp antimatter-push-proxy <file>; sudo chmod 0640 <file>`): the service runs in
+(`sudo install -o root -g antimatter-push-proxy -m 0640 <files> /etc/antimatter-push-proxy/certs/`;
+the directory is `0750`, so a `certs/*` glob in your own shell can't list it): the service runs in
 `/etc/antimatter-push-proxy`, so `"./certs/AuthKey_ABCDE12345.p8"` works as above. Then
 `sudo systemctl start antimatter-push-proxy`.
 
